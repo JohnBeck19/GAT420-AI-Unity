@@ -1,56 +1,89 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
+[RequireComponent(typeof(AINavAgent))]
 public class AINavPath : MonoBehaviour
 {
-	[SerializeField] private AINavNode startNode;
-
+	enum ePathType
+	{ 
+		Waypoint,
+        Dijkstra,
+        AStar,
+	}
+	[SerializeField] AINavAgent agent;
+	[SerializeField] ePathType pathType;
+	List<AINavNode> path = new List<AINavNode>();
 	public AINavNode targetNode { get; set; } = null;
 	public Vector3 destination 
 	{ 
 		get 
 		{ 
 			return (targetNode != null) ? targetNode.transform.position : Vector3.zero; 
-		} 
+		}
+		set
+		{
+			if (pathType == ePathType.Waypoint) { targetNode = agent.GetNearestAINavNode(value); }
+			else if (pathType == ePathType.Dijkstra || pathType == ePathType.Dijkstra)
+            {
+				AINavNode startNode = agent.GetNearestAINavNode();
+				AINavNode endNode = agent.GetNearestAINavNode(value);
+
+				GeneratePath(startNode, endNode);
+				targetNode = startNode;
+			}
+		}
 	}
 
-	private void Start()
-	{
-		targetNode = (startNode != null) ? startNode : AINavNode.GetRandomAINavNode(); 
-		
-	}
 
-	public bool HasPath()
+	public bool HasTarget()
 	{
 		return targetNode != null;
 	}
 
 	public AINavNode GetNextAINavNode(AINavNode node)
 	{
-		return node.GetRandomNeighbor();
+		if (pathType == ePathType.Waypoint) return node.GetRandomNeighbor();
+		if (pathType == ePathType.Dijkstra || pathType == ePathType.AStar) return GetNextPathAiNavNode(node);
+		return null;
 	}
-
-	/*
-	public AINavNode GetNearestAINavNode()
+	private void GeneratePath(AINavNode startNode, AINavNode endNode)
 	{
-		var nodes = AINavNode.GetAINavNodes().ToList();
-		SortAINavNodesByDistance(nodes);
-
-		return (nodes.Count == 0) ? null : nodes[0];
+		AINavNode.ResetNodes();
+		if (pathType == ePathType.Dijkstra) AINavDijkstra.Generate(startNode, endNode,ref path);
+		if (pathType == ePathType.AStar) AINavStar.Generate(startNode, endNode,ref path);
 	}
-
-	public void SortAINavNodesByDistance(List<AINavNode> nodes)
+	private AINavNode GetNextPathAiNavNode(AINavNode node)
 	{
-		nodes.Sort(CompareDistance);
-	}
+		if (path.Count == 0) return null;
 
-	public int CompareDistance(AINavNode a, AINavNode b)
-	{
-		float squaredRangeA = (a.transform.position - transform.position).sqrMagnitude;
-		float squaredRangeB = (b.transform.position - transform.position).sqrMagnitude;
-		return squaredRangeA.CompareTo(squaredRangeB);
+		int index = path.FindIndex(pathNode => pathNode == node);
+
+		if (index == -1 || index + 1 == path.Count) return null;
+
+		AINavNode nextNode = path[index+1];
+
+		return nextNode;
+
 	}
-	*/
+    private void OnDrawGizmosSelected()
+    {
+        if (path.Count == 0) return;
+
+        var pathArray = path.ToArray();
+
+        for (int i = 1; i < path.Count - 1; i++)
+        {
+            Gizmos.color = Color.black;
+            Gizmos.DrawSphere(pathArray[i].transform.position + Vector3.up, 1);
+        }
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawSphere(pathArray[0].transform.position + Vector3.up, 1);
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(pathArray[pathArray.Length - 1].transform.position + Vector3.up, 1);
+    }
 }

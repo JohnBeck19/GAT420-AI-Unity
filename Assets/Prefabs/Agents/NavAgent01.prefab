@@ -314,6 +314,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movement: {fileID: 2266939164153654330}
   path: {fileID: 2266939164153654212}
+  startNode: {fileID: 0}
 --- !u!114 &2266939164153654212
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -326,7 +327,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9899cd394776f845b49bc89e7ec9c3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startNode: {fileID: 0}
+  agent: {fileID: 2266939164153654213}
+  pathType: 1
 --- !u!1 &1668917067923368191
 GameObject:
   m_ObjectHideFlags: 0

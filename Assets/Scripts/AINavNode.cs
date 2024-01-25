@@ -8,6 +8,9 @@ public class AINavNode : MonoBehaviour
 {
 	[SerializeField] public List<AINavNode> neighbors = new List<AINavNode>();
 
+	public float Cost { get; set; } = float.MaxValue;
+	public AINavNode Parent { get; set; } = null;
+
 	public AINavNode GetRandomNeighbor()
 	{
 		return (neighbors.Count > 0) ? neighbors[Random.Range(0, neighbors.Count)] : null;
@@ -19,7 +22,7 @@ public class AINavNode : MonoBehaviour
 		{
 			if (navPath.targetNode == this)
 			{
-				navPath.targetNode = GetRandomNeighbor();
+				navPath.targetNode = navPath.GetNextAINavNode(navPath.targetNode);
 			}
 		}
 	}
@@ -30,15 +33,23 @@ public class AINavNode : MonoBehaviour
 		{
 			if (navPath.targetNode == this)
 			{
-				navPath.targetNode = GetRandomNeighbor();
-			}
+				navPath.targetNode = navPath.GetNextAINavNode(navPath.targetNode);
+            }
 		}
 	}
+    public static void ResetNodes()
+    {
+        var nodes = GetAINavNodes();
+        foreach (var node in nodes)
+        {
+            node.Parent = null;
+            node.Cost = float.MaxValue;
+        }
+    }
 
+    #region HELPER_FUNCTIONS
 
-	#region HELPER_FUNCTIONS
-
-	public static AINavNode[] GetAINavNodes()
+    public static AINavNode[] GetAINavNodes()
 	{
 		return FindObjectsOfType<AINavNode>();
 	}
