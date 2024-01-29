@@ -26,7 +26,7 @@ public class AINavPath : MonoBehaviour
 		set
 		{
 			if (pathType == ePathType.Waypoint) { targetNode = agent.GetNearestAINavNode(value); }
-			else if (pathType == ePathType.Dijkstra || pathType == ePathType.Dijkstra)
+			else if (pathType == ePathType.Dijkstra || pathType == ePathType.AStar)
             {
 				AINavNode startNode = agent.GetNearestAINavNode();
 				AINavNode endNode = agent.GetNearestAINavNode(value);

@@ -10,6 +10,7 @@ public class AINavDijkstra
         var nodes = new SimplePriorityQueue<AINavNode>();
 
         startNode.Cost = 0;
+        
         nodes.EnqueueWithoutDuplicates(startNode, startNode.Cost);
         bool found = false;
         while (!found && nodes.Count > 0)

@@ -31,7 +31,7 @@ public class AINavStar
                     neighbor.Cost = cost;
                     neighbor.Parent = node;
                     heuristic = Vector3.Distance(neighbor.transform.position, endNode.transform.position);
-                    nodes.EnqueueWithoutDuplicates(neighbor, neighbor.Cost);
+                    nodes.EnqueueWithoutDuplicates(neighbor, neighbor.Cost + heuristic);
                 }
             }
         }

@@ -104,7 +104,7 @@ public class AINavNodeEditor : MonoBehaviour
 		}
 
 		// use the event
-		e.Use();
+		//e.Use();
 	}
 
 	private void OnDrawGizmos()

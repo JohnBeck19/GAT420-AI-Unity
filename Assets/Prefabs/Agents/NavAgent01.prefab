@@ -328,7 +328,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 2266939164153654213}
-  pathType: 1
+  pathType: 2
 --- !u!1 &1668917067923368191
 GameObject:
   m_ObjectHideFlags: 0
