@@ -8,10 +8,19 @@ public class AIChaseState : AIState
 
     public AIChaseState(AIStateAgent agent) : base(agent)
     {
+        AIStateTransition transition = new AIStateTransition(nameof(AIAttackState));
+        transition.AddCondition(new BoolCondition(agent.enemySeen));
+        transition.AddCondition(new FloatCondition(agent.enemyDistance, Condition.Predicate.LESS, 1.5f));
+        transitions.Add(transition);
+
+        transition = new AIStateTransition(nameof(AIIdleState));
+        transition.AddCondition(new BoolCondition(agent.enemySeen, false));
+        transitions.Add(transition);
     }
 
     public override void OnEnter()
     {
+        agent.movement.Resume();
         initialSpeed = agent.movement.maxSpeed;
         agent.movement.maxSpeed *= 2;
     }
@@ -23,18 +32,9 @@ public class AIChaseState : AIState
 
     public override void OnUpdate()
     {
-        var enemies = agent.enemyPerception.GetGameObjects();
-        if (enemies.Length > 0)
+        if (agent.enemySeen)
         {
-            var enemy = enemies[0];
-            if (Vector3.Distance(agent.transform.position, enemy.transform.position) < 1.25)
-            {
-                agent.stateMachine.setState(nameof(AIAttackState));
-            }
-        }
-        else
-        {
-            agent.stateMachine.setState(nameof(AIIdleState));
+            agent.movement.Destination = agent.enemy.transform.position;
         }
     }
 

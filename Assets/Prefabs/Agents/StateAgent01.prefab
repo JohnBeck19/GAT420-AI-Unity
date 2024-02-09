@@ -2304,7 +2304,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movement: {fileID: 9093665403819750849}
   animator: {fileID: 3411939788198839101}
-  health: 10
+  health:
+    value: 100
+  timer:
+    value: 0
+  destinationDistance:
+    value: 0
+  enemySeen:
+    value: 0
+  enemyHealth:
+    value: 10
+  enemyDistance:
+    value: 0
   enemyPerception: {fileID: 9093665403819750855}
 --- !u!114 &9093665403819750849
 MonoBehaviour:
@@ -2321,7 +2332,7 @@ MonoBehaviour:
   maxSpeed: 5
   minSpeed: 5
   maxForce: 5
-  turnRate: 140
+  turnRate: 270
   navMeshAgent: {fileID: 9093665403819750854}
 --- !u!195 &9093665403819750854
 NavMeshAgent:

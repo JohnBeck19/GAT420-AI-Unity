@@ -28,6 +28,7 @@ public class AIStateAgent : AIAgent
         stateMachine.AddState(nameof(AIAttackState), new AIAttackState(this));
         stateMachine.AddState(nameof(AIDeathState), new AIDeathState(this));
         stateMachine.AddState(nameof(AIChaseState), new AIChaseState(this));
+        stateMachine.AddState(nameof(AIHitState), new AIHitState(this));
 
         stateMachine.setState(nameof(AIIdleState));
     }
@@ -49,6 +50,16 @@ public class AIStateAgent : AIAgent
         if (health <= 0) stateMachine.setState(nameof(AIDeathState));
 
         animator?.SetFloat("Speed", movement.Velocity.magnitude);
+
+        //check for transition 
+        foreach (var transition in stateMachine.CurrentState.transitions)
+        {
+            if (transition.ToTransition())
+            {
+                stateMachine.setState(transition.nextState);
+                break;
+            }
+        }
 
         stateMachine.Update();
     }
@@ -80,7 +91,7 @@ public class AIStateAgent : AIAgent
             // check if collider object is a state agent, reduce health
             if (collider.gameObject.TryGetComponent<AIStateAgent>(out var stateAgent))
             {
-                stateAgent.ApplyDamage(Random.Range(20, 50));
+                stateAgent.ApplyDamage(Random.Range(5, 5));
             }
         }
     }

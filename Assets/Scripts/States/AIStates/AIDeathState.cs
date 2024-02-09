@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class AIDeathState : AIState
 {
-    float timer = 0;
+    
     public AIDeathState(AIStateAgent agent) : base(agent)
     {
     }
@@ -12,7 +13,7 @@ public class AIDeathState : AIState
     public override void OnEnter()
     {
         agent.animator?.SetTrigger("Death");
-        timer = Time.time + 2;
+        agent.timer.value = Time.time + 2;
     }
 
     public override void OnExit()
@@ -22,7 +23,7 @@ public class AIDeathState : AIState
 
     public override void OnUpdate()
     {
-        if (Time.time > timer)
+        if (Time.time > agent.timer.value)
         {
            GameObject.Destroy(agent.gameObject);
         }

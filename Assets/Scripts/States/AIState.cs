@@ -6,6 +6,8 @@ public abstract class AIState
 {
     protected AIStateAgent agent;
 
+    public List<AIStateTransition> transitions { get; set; } = new List<AIStateTransition>(); 
+
     public AIState(AIStateAgent agent)
     { 
         this.agent = agent;

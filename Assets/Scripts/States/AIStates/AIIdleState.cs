@@ -5,14 +5,21 @@ using UnityEngine;
 
 public class AIIdleState : AIState
 {
-    float timer;
+   
+
     public AIIdleState(AIStateAgent agent) : base(agent)
     {
+        AIStateTransition transition = new AIStateTransition(nameof(AIPatrolState));
+        transition.AddCondition(new FloatCondition(agent.timer, Condition.Predicate.LESS, 0));
+        transitions.Add(transition);
+        transition = new AIStateTransition(nameof(AIChaseState));
+        transition.AddCondition(new BoolCondition(agent.enemySeen));
+        transitions.Add(transition);
     }
 
     public override void OnEnter()
     {
-        timer = Time.time + Random.Range(1, 2);
+        agent.timer.value = Time.time + Random.Range(1, 2);
     }
 
     public override void OnExit()
@@ -22,13 +29,6 @@ public class AIIdleState : AIState
 
     public override void OnUpdate()
     {
-        if ( Time.time > timer)
-        {
-            agent.stateMachine.setState(nameof(AIPatrolState));
-        }
-
-        var enemies = agent.enemyPerception.GetGameObjects();
-        if (enemies.Length > 0) { agent.stateMachine.setState(nameof(AIAttackState)); }
-
+        agent.timer.value -= Time.deltaTime;
     }
 }
